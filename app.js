@@ -2,6 +2,9 @@ const express = require("express")
 const app = express()
 const path = require("path")
 
+//setting/multer 설정
+const upload = require("./setting/multer")
+
 const nunjucks = require('nunjucks')
 app.set('view engine', 'html')
 nunjucks.configure('views/', {
@@ -13,31 +16,35 @@ const dotenv = require('dotenv')
 dotenv.config();
 
 
+
 app.set("port", 8083)
 
 //multer 설정
 app.get("/multer", (req, res ,next) => {
     res.render("multer")
 })
-app.post("/multer/upload", upload.single('img'), (req, res ,next) => {
+
+/**
+ * 요청이 들어오면 이미지를 /res/img.jpg로 저장하고 파이썬 스크립트 실행
+ */
+app.post("/multer/upload", upload.single('img'), async (req, res ,next) => {
     // console.log(req.file);
 
-    res.json(`{"url" : "/res/${req.file.filename }"}`)
-})
+    // res.json(`{"url" : "/res/${req.file.filename }"}`)
 
-app.get("/start", async (req,res, next)=> {
-    // 파이썬 스크립트 실행
-
-    const result = require('child_process').spawn('python')
+    const result = require('child_process').spawn('python',  ['./modelLogic.py'])
     await result.stdout.on('data', (data) => {
-        res.send( data.toString() )
+        res.json( `{"result" : "${data.string() }"}` )
     })
-    
+
 })
+
+
+
 
 
 app.get("/" , (req, res, next) =>{
-        res.render("index.html")
+        res.render("multer.html")
 })
 
 
