@@ -5,7 +5,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, BatchNormalization
 import tensorflow as tf
 
-# 모델 생성
+
 model = Sequential()
 model.add(Conv2D(32, kernel_size = 3, activation='relu', input_shape = (28, 28, 1)))
 model.add(BatchNormalization())
@@ -31,13 +31,14 @@ model.add(Dense(10, activation='softmax'))
 
 model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-# 모델 로드
 model.load_weights('MNIST')
 
 img = cv2.imread("res/img.jpg")
-plt.figure(figsize=(15, 12))
+# plt.figure(figsize=(15, 12))
 
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+            
 
 img_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)
 
@@ -87,11 +88,13 @@ for rect in rects:
     
     square = border
     
-    resiz_img = cv2.resize(square, dsize=(28, 28), interpolation=cv2.INTER_AREA)
+    resiz_img = cv2.resize(square, dsize=(28, 28), interpolation=cv2.INTER_AREA) 
     mnist_imgs.append(resiz_img)
 
 res = []
 
+
+## 허남정/Print 구문 최적화.
 for i in range(len(mnist_imgs)):
     
     input_img = mnist_imgs[i]
@@ -100,7 +103,7 @@ for i in range(len(mnist_imgs)):
     input_data = ((np.array(img) / 255) - 1) * -1
     input_data
     
-    res.append(np.argmax(model.predict(input_data), axis=-1))
+    res.append(str(int(np.argmax(model.predict(input_data, verbose=0, workers=10), axis=-1)))) # workers 10 설정 , verbose =0 설정(print문 x)
     
-for i in range(len(res)):
-    print(int(res[i]), end="")
+
+print( ''.join(res), end="" ) # 프린터는 한번만 / 허남정

@@ -22,3 +22,6 @@
 ### 참고(reference) 목록
 - 참고 ajax로 파일(multpart/form-data) 전송하기: https://dorongdogfoot.tistory.com/144
 
+### 작동화면
+![작동화면](./프로젝트문서/작동화면.jpg)
+

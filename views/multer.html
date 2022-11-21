@@ -17,31 +17,55 @@ crossorigin="anonymous"></script>
     
     <head>
         <title>테스트  </title>
-        <meta name="viewport" content="width=device-width, initial-scale=4">
+        <meta name="viewport" content="width=device-width">
     </head>
     <body>
 
         <div class="container-fluid">
-            <div class="card" >
-                <div class="row" style="float:left">
-                    <div class="col-md-1" class="card-body">
+            <div class="card" style="float:left"  >
+                <div class="row" >
+                    <!-- 업로드 버튼은 비활성화(프로젝트에서 쓰지는 않지만 구현해놓음.) -->
+                    <!-- <div class="col" >
                         <form id="uploadForm">
                             <input type="file"  name="img" class="btn btn-secondary"/>
-                            <button type="button" id="uploadBtn" class="btn btn-primary">Save</button>
-                            <div class="spinner-border text-primary" id="spinner" role="status" style="visibility: hidden;"></div>
                         </form>
-                    </div>
+                    </div> -->
+ 
 
   
 
                 </div>
+
+
+
+                <!-- 캠퍼스 -->
+                <div class="row-md">
+                    <div class="col" >
+                        <canvas id="canvas" width="400" height="400" class="shadow p-3 mb-5 bg-body rounded"></canvas>
+                    </div>
+                    <div class="col" >
+
+                    </div>
+                    
+                    
+
+                    <div class="col" >
+                        <button type="button" id="uploadBtn" class="btn btn-primary" >Save</button>
+                        <button type="button" id="resetBtn" class="btn btn-secondary" >Reset</button>
+
+                        <form id="uploadForm">
+                            <div class="spinner-border text-primary" id="spinner" role="status" style="visibility: hidden;"></div>
+                        </form>
+                    </div>
+
+                </div>
+
                 <div class="row">
-                    <div class="col-md" class="card-body">
-                        <div  class="card-body">
+                    <div class="col" >
                             <span id="result" class="p-3 mb-2 bg-light text-dark">required Result</span>
-                        </div>
                     </div>
                 </div>
+                <p></p>
                 
                 </div>
             </div>
@@ -55,21 +79,39 @@ crossorigin="anonymous"></script>
 <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script>
-
-
+    const canvas = document.querySelector("#canvas");
+    var context = canvas.getContext('2d');
+    context.fillStyle = '#FFFFFF'; 
+    context.fillRect(0, 0, canvas.width, canvas.height);
     $(function(){
  
         $('#uploadBtn').on('click', function(){
             uploadFile();
         });
-     
+        
     });
-     
+    
     const  uploadFile = async() =>{
         
+
+        const image = canvas.toDataURL("image/png").split(',')[1]; // 1. Canvas 이미지를 데이터로 저장(base64 인코딩)
+        const decodeImage = atob(image) // 저장된 Canvas 이미지를 base64 에서 디코딩
+        const Bytearray = [];
+        for (let i =0; i < decodeImage.length; i += 1)
+            Bytearray.push(decodeImage.charCodeAt(i)) // 2. 디코딩된 값을 바이트 배열로 변환 후 저장
+
+        const u8arr = new Uint8Array(Bytearray);    //3. typed array인 8bit unsigned array로 변환
+        const file = new Blob([u8arr], { type: "image/png" });  //4. new blob() 생성자를 사용해 blob 값으로 변환
+
+        // 5. FormData() 생성자를 사용해 이미지 값을 서버의 데이터로 저장
+        const formData = new FormData(); // formData 생성
+        formData.append("img", file); // formdata에 file data 추가
+
+        /* multer 이용, Canvas 이용으로 변경
         var form = $('#uploadForm')[0];
-        var formData = new FormData(form);
-        var result;
+        var formData = new FormData( form ) // multipart 이용
+        */
+        
         $(function() {
             $("#spinner").css(
                 "visibility" , "visible"
@@ -84,11 +126,12 @@ crossorigin="anonymous"></script>
             url : './multer/upload',
             type : 'POST',
             data : formData,
+            timeout: 10000,
             contentType : false,
             processData : false ,       
             success: (res) => {
                 result = JSON.parse(res)
-                $('#result').text("저정완료 >> "  +result.result + "에 저장완료")
+                $('#result').text("결과 >> "  +result.result + "")
             },
             error : (res) => {
                 $('#result').text("has error")
@@ -106,8 +149,130 @@ crossorigin="anonymous"></script>
                 "visibility" , "hidden"
             )
         })
+    }
+
+
+
+    /** 리셋 버튼 */
+    $(function(){
+ 
+        $('#resetBtn').on('click', function(){
+            reset()
+        });
+        
+    });
+    const reset = () => {
+        context.fillStyle = '#FFFFFF'; 
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+
+</script>
+
+<style type="text/css">
+    #canvas { border: 1px solid black; }
+    #resetBtn{ width :100; float: right;}
+    #uploadBtn{ width : 100; }
+</style>
+
+<script>
+    /**
+    * 참고 : https://velog.io/@nala723/그림판으로-그린-그림-서버와-소통-postget
+    * canvas 이미지를 base64 로 인코딩
+    * Base64 란? 글자 그대로 직역하면 64진법이라는 뜻.
+    * 2의 제곱수에 기반한 진법 중 화면에 표시되는 ASCII 문자들로 표시할 수 있는 가장 큰 진법
+    * HTML, CSS, JSON 등의 다른 포멧 안에 이미지데이터를 첨부할 때 주로 Base64 이미지가 사용된다.
+    * HTML 문서에 이미지 데이터를 포함함으로써 브라우저는 부가적인 파일 요청을 할 필요가 없다.
+    * 
+    
+    */
+
+    if (canvas.getContext){
+        var context = canvas.getContext('2d');
+        // drawing code here
+      } else {
+        // canvas-unsupported code here
+      }
+    let drawingMode; // true일 때만 그림이 그려지도록
+
+    function downHandler(e) {
+    
+        let x = event.offsetX;
+        let y = event.offsetY;
+      draw(x, y)
+      drawingMode = true;
+    }
+    
+    function upHandler() {
+      drawingMode = false;
+      
+    }
+
+    // 성능 최적화 https://studiomeal.com/archives/109
+    context.lineWidth = 6;
+    var draw = (x, y) => {
+        x = x -10
+        y = y -10
+        if(!drawingMode){
+            context.beginPath();
+            context.moveTo(x, y);
+        }else{
+            context.lineTo(x, y);
+            context.stroke();
+        }
+    }
+    
+
+    function moveHandler(event) {
+      
+
+      if (!drawingMode) return;
+    
+      let x = event.offsetX;
+      let y = event.offsetY;
+
+
+      draw(x, y)
+
 
     }
+    
+    canvas.addEventListener('mousedown', downHandler);
+    canvas.addEventListener('mousemove', moveHandler);
+    canvas.addEventListener('mouseup', upHandler);
+
+
+
+
+    /** 모바일 */
+    // 사용 : https://joylee-developer.tistory.com/135
+    function getTouchPos(e) {
+        return {
+            x: e.touches[0].clientX - e.target.offsetLeft,
+            y: e.touches[0].clientY - e.target.offsetTop
+        }
+    }
+    function touchStart(e) {
+        e.preventDefault();
+        const { x, y } = getTouchPos(e);
+        draw(x, y)
+        drawingMode = true;
+    }
+    function touchMove(e) {
+
+        const { x, y } = getTouchPos(e);
+        
+        draw(x, y)
+
+    }
+    function touchEnd(e) {
+        e.preventDefault();
+        drawingMode = false;
+    }
+    canvas.addEventListener('touchstart', touchStart, false);
+    canvas.addEventListener('touchmove', touchMove, false);
+    canvas.addEventListener('touchend', touchEnd, false);
 
     
 </script>
+
