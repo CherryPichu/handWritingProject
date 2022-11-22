@@ -1,5 +1,5 @@
 
-## 씨애랑 소프트웨어 전시회 - 코어 팀
+## 씨애랑 소프트웨어 전시회 - 텐서팀
 <hr>
 
 ### 팀원소개
@@ -19,9 +19,11 @@
   - <img src="https://img.shields.io/badge/HTML5-3776AB?style=flat-square&logo=HTML5&logoColor=FFFFFF&color=red"/></a>
   - <img src="https://img.shields.io/badge/CSS-3776AB?style=flat-square&logo=CSS3&logoColor=FFFFFF&color=blue"/></a>
   - <img src="https://img.shields.io/badge/bootstrap-3776AB?style=flat-square&logo=bootstrap&logoColor=FFFFFF&color=purple"/></a>
-### 참고(reference) 목록
-- 참고 ajax로 파일(multpart/form-data) 전송하기: https://dorongdogfoot.tistory.com/144
 
 ### 작동화면
-![작동화면](./프로젝트문서/작동화면.jpg)
+<img width="300" alt = "작동화면" src="./프로젝트문서/결과물%20작동화면.gif">
+
+### 참고(reference) 목록
+- 참고 ajax로 파일(multpart/form-data) 전송하기: https://dorongdogfoot.tistory.com/144
+- 참고 canvas 데이터를 multpart로 서버에 전송하기 : https://velog.io/@nala723/그림판으로-그린-그림-서버와-소통-postget
 
