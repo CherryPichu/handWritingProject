@@ -6,6 +6,9 @@
 - 허홍준 (18, 씨애랑)
 - 허남정 (20)
 
+### 테스트 사이트
+- <a href="namjung.blog">링크</a>
+
 ### Abstract Map
 ![구상도](./프로젝트문서/설계도.drawio.png)
 
