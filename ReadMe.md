@@ -6,6 +6,9 @@
 - 허홍준 (18, 씨애랑)
 - 허남정 (20)
 
+### 테스트 사이트
+- <a href="namjung.blog">링크</a>
+
 ### Abstract Map
 ![구상도](./프로젝트문서/설계도.drawio.png)
 
@@ -27,3 +30,5 @@
 - 참고 ajax로 파일(multpart/form-data) 전송하기: https://dorongdogfoot.tistory.com/144
 - 참고 canvas 데이터를 multpart로 서버에 전송하기 : https://velog.io/@nala723/그림판으로-그린-그림-서버와-소통-postget
 
+### 판넬
+![판넬](panel.PNG)

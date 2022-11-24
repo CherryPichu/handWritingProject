@@ -49,7 +49,6 @@ contours, hierachy = cv2.findContours(img_th.copy(), cv2.RETR_TREE, cv2.CHAIN_AP
 rects = [cv2.boundingRect(each) for each in contours]
 
 rects = sorted(rects)
-thickness = abs(rects[0][2]-rects[1][2])*2
 
 contour_sizes = [(cv2.contourArea(contour), contour) for contour in contours]
 biggest_contour = max(contour_sizes, key=lambda x: x[0])[1]
